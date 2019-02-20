@@ -1,0 +1,136 @@
+<?php
+
+namespace DeskFlix\Http\Controllers\Admin;
+
+use DeskFlix\Form\SerieForm;
+use DeskFlix\Models\Serie;
+use DeskFlix\Repositories\SerieRepository;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
+use DeskFlix\Http\Controllers\Controller;
+
+class SeriesController extends Controller
+{
+    protected $repository;
+
+    public function __construct(SerieRepository $repository)
+    {
+        $this->repository = $repository;
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        $series = $this->repository->paginate();
+        return view('admin.series.index', compact('series'));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        $form = \FormBuilder::create(SerieForm::class, [
+            'url' => route('admin.series.store'),
+            'method' => 'POST'
+        ]);
+
+        return view('admin.series.create', compact('form'));
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        $form = \FormBuilder::create(SerieForm::class);
+
+        if(!$form->isValid()){
+            return redirect()
+                ->back()
+                ->withErrors($form->getErrors())
+                ->withInput();
+        }
+
+        $data = $form->getFieldValues();
+        $data['thumb'] = env('SERIE_NO_THUMB');
+        Model::unguard();
+
+        $this->repository->create($data);
+
+        $request->session()->flash('message', 'Serie criada com sucesso.');
+
+        return redirect()->route('admin.series.index');
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  Serie $serie
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function show(Serie $series)
+    {
+        return view('admin.series.show', ['serie' => $series]);
+    }
+
+    public function edit(Serie $series)
+    {
+        $form = \FormBuilder::create(SerieForm::class, [
+            'url' => route('admin.series.update', ['serie' => $series->id]),
+            'method' => 'PUT',
+            'model' => $series,
+            'data' => ['id' => $series->id]
+        ]);
+
+        return view('admin.series.edit', compact('form'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $form = \FormBuilder::create(SerieForm::class, [
+                'data' => ['id' => $id]
+            ]);
+
+        if(!$form->isValid()){
+            return redirect()
+                ->back()
+                ->withErrors($form->getErrors())
+                ->withInput();
+        }
+
+        $data = array_except($form->getFieldValues(), 'thumb');
+        $this->repository->update($data, $id);
+
+        $request->session()->flash('message', 'Serie alterada com sucesso.');
+
+        return redirect()->route('admin.series.index');
+    }
+
+    public function destroy(Request $request, $id)
+    {
+        $this->repository->delete($id);
+        $request->session()->flash('message', 'Serie excluída com sucesso.');
+        return redirect()->route('admin.series.index');
+    }
+
+    public function thumbAsset(Serie $serie)
+    {
+        return response()->download($serie->thumb_path);
+    }
+    public function thumbSmallAsset(Serie $serie)
+    {
+        return response()->download($serie->thumb_small_path);
+    }
+
+}
