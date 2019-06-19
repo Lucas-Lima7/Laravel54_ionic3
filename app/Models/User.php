@@ -26,7 +26,8 @@ class User extends Authenticatable implements TableInterface, JWTSubject
         'name',
         'email',
         'password',
-        'role'
+        'role',
+        'cpf'
     ];
 
     /**
@@ -37,6 +38,24 @@ class User extends Authenticatable implements TableInterface, JWTSubject
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    //para fazer a ponte entre user e subscription... user/order/subscription
+    public function subscriptions(){
+        return $this->hasManyThrough(Subscription::class, Order::class);
+    }
+
+    public function hasSubscriptionValid(){
+        $valid = false;
+        $subscriptions = $this->subscriptions;
+        /** @var Subscription $subscription */
+        foreach ($subscriptions as $subscription){
+            $valid = !$subscription->isExpired();
+            if($valid){
+                break;
+            }
+        }
+        return $valid;
+    }
 
     public static function generatePassword($password = null)
     {
@@ -93,7 +112,8 @@ class User extends Authenticatable implements TableInterface, JWTSubject
             'user' => [
                 'id' => $this->id,
                 'name' => $this->name,
-                'email' => $this->email
+                'email' => $this->email,
+                'subscription' => $this->hasSubscriptionValid()
             ]
         ];
     }

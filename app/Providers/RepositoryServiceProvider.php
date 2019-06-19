@@ -27,6 +27,9 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(\DeskFlix\Repositories\CategoryRepository::class, \DeskFlix\Repositories\CategoryRepositoryEloquent::class);
         $this->app->bind(\DeskFlix\Repositories\SerieRepository::class, \DeskFlix\Repositories\SerieRepositoryEloquent::class);
         $this->app->bind(\DeskFlix\Repositories\VideoRepository::class, \DeskFlix\Repositories\VideoRepositoryEloquent::class);
+        $this->app->bind(\DeskFlix\Repositories\PlanRepository::class, \DeskFlix\Repositories\PlanRepositoryEloquent::class);
+        $this->app->bind(\DeskFlix\Repositories\OrderRepository::class, \DeskFlix\Repositories\OrderRepositoryEloquent::class);
+        $this->app->bind(\DeskFlix\Repositories\SubscriptionRepository::class, \DeskFlix\Repositories\SubscriptionRepositoryEloquent::class);
         //:end-bindings:
     }
 }

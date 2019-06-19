@@ -28,7 +28,7 @@
     },
     "autoload": {
         "classmap": [
-            "database"
+          "database"
         ],
         "psr-4": {
             "DeskFlix\\": "app/"

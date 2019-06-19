@@ -18,7 +18,11 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 \ApiRoute::version('v1', function (){
-    ApiRoute::group(['namespace' => 'DeskFlix\Http\Controllers\Api', 'as' => 'api'], function (){
+    ApiRoute::group([
+        'namespace' => 'DeskFlix\Http\Controllers\Api',
+        'as' => 'api',
+        'middleware' => 'bindings'
+    ], function (){
        ApiRoute::post('/access_token', [
            'uses' => 'AuthController@accessToken',
            'middleware' => 'api.throttle', //para usar sistema de bloqueio por da qtd de requisição
@@ -43,6 +47,22 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
           ApiRoute::get('/test', function (){
               return "opa ok";
           });
+          ApiRoute::get('/user', function (Request $request){
+             return $request->user('api');
+          });
+          ApiRoute::patch('/user/settings', 'UsersController@updateSettings');
+
+           ApiRoute::post('/plans/{plan}/payments', 'PaymentsController@store');
+
+           // ************************************
+           // ÁREA DO ASSINANTE *****************
+           // ************************************
+           ApiRoute::group(['middleware' => 'check-subscriptions'],function(){
+               ApiRoute::get('/test', function (){
+                   return "opa ok";
+               });
+               //ApiRoute::resource('videos','VideosController',['only'=>['index','show']]);
+           });
        });
     });
 });

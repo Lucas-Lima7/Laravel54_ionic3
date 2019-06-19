@@ -1,7 +1,5 @@
 <?php
-
 namespace DeskFlix\Providers\Dingo\Api\Event;
-
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
@@ -9,11 +7,9 @@ use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-
 class ResponseWasMorphed
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-
     /**
      * Create a new event instance.
      *
@@ -23,7 +19,6 @@ class ResponseWasMorphed
     {
         //
     }
-
     /**
      * Get the channels the event should broadcast on.
      *

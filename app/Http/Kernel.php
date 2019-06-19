@@ -57,6 +57,7 @@ class Kernel extends HttpKernel
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
         'guest' => \DeskFlix\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
-        'IsVerified' => \Jrean\UserVerification\Middleware\IsVerified::class
+        'IsVerified' => \Jrean\UserVerification\Middleware\IsVerified::class,
+        'check-subscriptions' => \DeskFlix\Http\Middleware\CheckSubscriptions::class
     ];
 }
