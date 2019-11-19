@@ -2,6 +2,7 @@
 
 namespace DeskFlix\Http\Controllers\Api;
 
+use DeskFlix\Http\Requests\AddCpfRequest;
 use DeskFlix\Http\Requests\UserSettingRequest;
 use DeskFlix\Repositories\UserRepository;
 use Illuminate\Http\Request;

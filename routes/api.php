@@ -38,6 +38,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
            ])
            ->name('.refresh_token');
 
+//        ApiRoute::get('/plans', 'PlansController@index');
+
        ApiRoute::group([
            'middleware' => ['api.throttle', 'api.auth'],
            'limit' => 100,
@@ -52,7 +54,14 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
           });
           ApiRoute::patch('/user/settings', 'UsersController@updateSettings');
 
-           ApiRoute::post('/plans/{plan}/payments', 'PaymentsController@store');
+          ApiRoute::patch('/user/cpf', 'UsersController@addCpf');
+
+          ApiRoute::get('/plans', 'PlansController@index');
+
+           ApiRoute::post('/plans/{plan}/payments', 'PaymentsController@makePayment'); //criando pagamento
+           ApiRoute::patch('/plans/{plan}/payments', 'PaymentsController@store'); //aprovando pagamento
+
+
 
            // ************************************
            // ÁREA DO ASSINANTE *****************

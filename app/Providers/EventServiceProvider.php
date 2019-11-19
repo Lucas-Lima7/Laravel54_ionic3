@@ -21,7 +21,8 @@ class EventServiceProvider extends ServiceProvider
             \DeskFlix\Listeners\CreateOrderListener::class
         ],
         \Prettus\Repository\Events\RepositoryEntityCreated::class => [
-            \DeskFlix\Listeners\CreateSubscriptionListener::class
+            \DeskFlix\Listeners\CreateSubscriptionListener::class,
+            \DeskFlix\Listeners\CreatePayPalWebProfileListener::class
         ]
     ];
 

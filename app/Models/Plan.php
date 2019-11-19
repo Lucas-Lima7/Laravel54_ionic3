@@ -23,6 +23,10 @@ class Plan extends Model implements Transformable, TableInterface
         'duration',
     ];
 
+    public function getSku(){
+        return "plan - {$this->id}";
+    }
+
     protected $casts = [
       'duration' => 'integer'
     ];

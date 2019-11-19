@@ -24,6 +24,10 @@ class AddCpfRequest extends FormRequest
      */
     public function rules()
     {
+        $cpf = preg_replace("/[^0-9]/", "", $this->get('cpf'));
+        $this->replace([
+           'cpf' => $cpf
+        ]);
         return [
             'cpf' => [
                 'required',

@@ -2,12 +2,15 @@
 
 namespace DeskFlix\Providers;
 
+use Code\Validator\Cpf;
 use DeskFlix\Exceptions\SubscriptionInvalidException;
 use DeskFlix\Models\Video;
 use Dingo\Api\Exception\Handler;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\ValidationException;
+use PayPal\Auth\OAuthTokenCredential;
+use PayPal\Rest\ApiContext;
 use Tymon\JWTAuth\Exceptions\JWTException;
 
 class AppServiceProvider extends ServiceProvider
@@ -27,6 +30,11 @@ class AppServiceProvider extends ServiceProvider
                }
            }
         });
+
+        \Validator::extend('cpf', function ($attribute, $value, $parameters, $validator){
+            return (new Cpf())->isValid($value);
+        });
+
     }
 
     /**
@@ -54,6 +62,16 @@ class AppServiceProvider extends ServiceProvider
             },
             true
         );
+
+        $this->app->bind(ApiContext::class, function (){
+            $apiContext = new ApiContext(new OAuthTokenCredential(
+                env('PAYPAL_CLIENT_ID'), env('PAYPAL_CLIENT_SECRET')
+            ));
+            $apiContext->setConfig([
+                'http.CURLOPT_CONNECTIONTIMEOUT' => 45
+            ]);
+            return $apiContext;
+        });
 
         $handler = app(Handler::class);
         $handler->register(function (AuthenticationException $exception){
